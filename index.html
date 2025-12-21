@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web3 Portfolio | Oleksandr</title>
+    <!-- Шрифти -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            /* --- PITCH BLACK & BLUE GRADIENT THEME --- */
+            
+            --bg-base: #010103; 
+            --primary: #38bdf8;   
+            --secondary: #1d4ed8; 
+            
+            --glass-bg: rgba(10, 10, 15, 0.7);
+            --glass-border: 1px solid rgba(56, 189, 248, 0.15); 
+            --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(56, 189, 248, 0.1);
+            
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            
+            --radius: 24px;
+            --transition: all 0.3s ease-out;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            /* Ховаємо стандартний курсор */
+            cursor: none !important; 
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+            background-image: radial-gradient(circle at 50% 10%, #0c1220 0%, #010103 60%);
+        }
+
+        /* --- ПУЛЬСУЮЧИЙ КУРСОР --- */
+        .cursor-dot,
+        .cursor-outline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        /* Центральна точка з анімацією дихання */
+        .cursor-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--primary);
+            /* Анімація пульсації */
+            animation: cursor-glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes cursor-glow {
+            0% {
+                box-shadow: 0 0 5px var(--primary), 0 0 10px var(--primary);
+                opacity: 0.7;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            100% {
+                box-shadow: 0 0 20px var(--primary), 0 0 40px var(--secondary);
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.3);
+            }
+        }
+
+        /* Зовнішнє кільце - слідує плавніше */
+        .cursor-outline {
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+        }
+
+        /* Ефект при наведенні (стає більшим) */
+        body.hovering .cursor-outline {
+            width: 60px;
+            height: 60px;
+            background-color: rgba(56, 189, 248, 0.05);
+            border-color: rgba(56, 189, 248, 0.5);
+            backdrop-filter: blur(2px);
+        }
+
+        body.hovering .cursor-dot {
+            background-color: #fff;
+            animation: none; /* Зупиняємо пульсацію при наведенні, щоб не відволікати */
+            box-shadow: 0 0 30px var(--primary); /* Стабільне світіння */
+        }
+
+        /* --- ФОНОВІ ПЛЯМИ --- */
+        .bg-blob {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(120px);
+            z-index: -1;
+            opacity: 0.2;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .blob-1 { top: -20%; left: -10%; width: 60vw; height: 60vw; background: #172554; }
+        .blob-2 { bottom: -20%; right: -20%; width: 50vw; height: 50vw; background: #1e3a8a; animation-delay: -5s; }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(30px, 50px); }
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 25px;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        /* --- BUTTONS --- */
+        .btn-cosmic {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 35px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            color: white;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-cosmic::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(90deg, #1e40af, #38bdf8);
+            z-index: -1;
+            transition: opacity 0.3s;
+            opacity: 0;
+        }
+
+        .btn-cosmic:hover::before { opacity: 1; }
+        
+        .btn-cosmic:hover {
+            transform: translateY(-2px);
+            border-color: transparent;
+            box-shadow: 0 0 30px rgba(56, 189, 248, 0.3);
+        }
+
+        /* --- HERO --- */
+        .hero {
+            padding: 120px 0 80px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+        }
+
+        .hero-content { flex: 1; }
+
+        .hero-role {
+            display: inline-block;
+            font-size: 0.85rem;
+            font-weight: 700;
+            background: linear-gradient(100deg, #ffffff 20%, #38bdf8 70%, #1e3a8a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+        }
+
+        .hero h1 {
+            line-height: 1;
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 5px;
+        }
+
+        .hero h1 .gradient-web3 {
+            display: block;
+            font-size: 5.5rem;
+            font-weight: 800;
+            background: linear-gradient(90deg, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -2px;
+            filter: drop-shadow(0 0 25px rgba(56, 189, 248, 0.2));
+        }
+
+        .hero h1 .simple-white {
+            display: inline-block;
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: #ffffff;
+            margin-top: 5px;
+            letter-spacing: 1px;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 35px;
+            max-width: 500px;
+            line-height: 1.7;
+        }
+
+        .hero-image-wrap {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            position: relative;
+        }
+
+        .hero-avatar {
+            width: 380px;
+            height: 380px;
+            object-fit: cover;
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            border: 2px solid var(--primary);
+            animation: morph 8s ease-in-out infinite;
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 0 50px rgba(56, 189, 248, 0.3); 
+            background: #010103;
+        }
+
+        @keyframes morph {
+            0% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+            50% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+            100% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+        }
+
+        /* --- GLASS PANEL --- */
+        .glass-panel {
+            background: var(--glass-bg);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius);
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .glass-panel::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.3), transparent);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        .section-header h2 { 
+            font-size: 2.2rem; 
+            margin-bottom: 10px; 
+            color: #fff;
+        }
+        .section-line {
+            width: 40px; 
+            height: 3px; 
+            background: linear-gradient(90deg, #38bdf8, #1d4ed8); 
+            margin: 0 auto; 
+            border-radius: 3px;
+        }
+
+        /* --- ABOUT --- */
+        .about-text {
+            /* ОНОВЛЕНО: Вирівнювання по ширині для структурованості */
+            text-align: justify;
+            font-size: 1.1rem;
+            color: #cbd5e1;
+            line-height: 1.8;
+        }
+        
+        /* ОНОВЛЕНО: Чіткий відступ між абзацами */
+        .about-text p {
+            margin-bottom: 25px;
+        }
+        
+        .about-text p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* --- SERVICES --- */
+        .services-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 25px;
+        }
+
+        .service-card {
+            flex: 1 1 300px;
+            max-width: 340px;
+            background: #060910; 
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            text-align: left;
+            position: relative;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(56, 189, 248, 0.4);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            background: #0a0f1a;
+        }
+
+        .service-icon {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #fff;
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.1), rgba(30, 64, 175, 0.1));
+            width: 60px; height: 60px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 12px;
+            border: 1px solid rgba(56, 189, 248, 0.1);
+        }
+
+        .service-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 10px;
+            color: white;
+        }
+        
+        .service-card p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* --- CONTACT --- */
+        .contact-wrap {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .contact-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .contact-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 28px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .contact-btn:hover {
+            background: linear-gradient(90deg, #0ea5e9, #2563eb);
+            border-color: transparent;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(14, 165, 233, 0.3);
+        }
+        
+        .contact-btn i { font-size: 1.2rem; }
+
+        /* --- MOBILE --- */
+        @media (max-width: 900px) {
+            .hero {
+                flex-direction: column-reverse;
+                text-align: center;
+                padding-top: 60px;
+            }
+            .hero-avatar { width: 280px; height: 280px; }
+            .hero h1 .gradient-web3 { font-size: 4rem; }
+            .hero h1 { align-items: center; }
+            .contact-links { flex-direction: column; }
+            .contact-btn { justify-content: center; }
+            .service-card { max-width: 100%; text-align: center; align-items: center; } 
+            .service-icon { margin-bottom: 15px; }
+            
+            /* На мобільному ховаємо кастомний курсор */
+            .cursor-dot, .cursor-outline { display: none; }
+            * { cursor: auto !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Елементи кастомного курсора -->
+    <div class="cursor-dot" data-cursor-dot></div>
+    <div class="cursor-outline" data-cursor-outline></div>
+
+    <!-- Дуже темні плями -->
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+
+    <div class="container">
+        
+        <!-- HERO SECTION -->
+        <section class="hero">
+            <div class="hero-content">
+                <span class="hero-role">Ambassador • Moderator • Content Creator</span>
+                <h1>
+                    <span class="gradient-web3">WEB3</span>
+                    <span class="simple-white">since 2021</span>
+                </h1>
+                <a href="#contact" class="btn-cosmic">
+                    Contact Me <i class="fa-solid fa-arrow-right-long"></i>
+                </a>
+            </div>
+            <div class="hero-image-wrap">
+                <!-- ВАЖЛИВО: Щоб поставити своє якісне фото:
+                     1. Збережіть фото (наприклад, avatar.jpg) у папку з цим файлом.
+                     2. Замініть посилання нижче на: src="avatar.jpg" 
+                -->
+                <img src="https://pbs.twimg.com/profile_images/2001369651528216577/tO-WSxb4_400x400.jpg" alt="Avatar" class="hero-avatar">
+            </div>
+        </section>
+
+        <!-- STACK -->
+        <div style="display: flex; flex-direction: column; gap: 80px; padding-bottom: 80px;">
+            
+            <!-- ABOUT -->
+            <section id="about">
+                <div class="section-header">
+                    <h2>About Me</h2>
+                    <div class="section-line"></div>
+                </div>
+                <div class="glass-panel">
+                    <div class="about-text">
+                        <p>
+                            My name is Vlad [vsdkk]. I’ve been actively working in the blockchain space since 2021. I started with investing in ICOs, IDOs, launchpads, and new projects out of curiosity. Over time, it became more than just an interest: I began diving deeper into running nodes, testnets, and the internal processes of projects to understand how everything actually works in practice.
+                        </p>
+                        <p>
+                            Since then, I’ve worked across different ecosystems DeFi, AI, and Layer 1/2 protocols. I’ve spent a lot of time in communities and ambassador programs, where real user interaction happens. Today, I’m a full-time contributor, and I enjoy working with people: communication, moderation, engagement, support, and creating clear and understandable context.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- WHAT I DO -->
+            <section id="services">
+                <div class="section-header">
+                    <h2>What I Do</h2>
+                    <div class="section-line"></div>
+                </div>
+                <div class="services-container">
+                    <div class="service-card">
+                        <div class="service-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                        <h3>Moderation</h3>
+                        <p>I manage community channels to keep them positive, organized, and spam-free while enforcing rules and resolving conflicts.</p>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon"><i class="fa-solid fa-bullhorn"></i></div>
+                        <h3>Ambassador</h3>
+                        <p>I represent the project publicly and talk about it in a clear, human way. I share updates, take part in events, and help people better understand the value of the product.</p>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon"><i class="fa-solid fa-pen-nib"></i></div>
+                        <h3>Content</h3>
+                        <p>I explain complex things in a simple, human way. I create content that doesn’t just “inform,” but actually helps people understand the product, its purpose, and its value. I write in a clear, engaging, and easy-to-read style.</p>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon"><i class="fa-solid fa-users-rays"></i></div>
+                        <h3>Community</h3>
+                        <p>I help communities grow by organizing meaningful global and regional activities that keep people engaged, active, and connected, and I can also take on the role of an event host leading events and maintaining a friendly, lively atmosphere.</p>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon"><i class="fa-solid fa-language"></i></div>
+                        <h3>Translation</h3>
+                        <p>I adapt content and news for the local community to ensure important information is accessible and easy for everyone to understand.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CONTACT -->
+            <section id="contact">
+                <div class="section-header">
+                    <h2>Contact</h2>
+                    <div class="section-line"></div>
+                </div>
+                <div class="glass-panel contact-wrap">
+                    <p style="font-size: 1.2rem; margin-bottom: 25px; color: #fff;">
+                        Let's Connect
+                    </p>
+                    <div class="contact-links">
+                        <a href="#" class="contact-btn">
+                            <i class="fa-brands fa-telegram"></i> Telegram
+                        </a>
+                        <a href="https://x.com/vsdkk" target="_blank" class="contact-btn">
+                            <i class="fa-brands fa-twitter"></i> Twitter / X
+                        </a>
+                        <a href="#" class="contact-btn">
+                            <i class="fa-brands fa-discord"></i> vsdkk.eth
+                        </a>
+                        <a href="#" class="contact-btn">
+                            <i class="fa-solid fa-envelope"></i> Email Me
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <!-- SCRIPT FOR CURSOR -->
+    <script>
+        const cursorDot = document.querySelector('[data-cursor-dot]');
+        const cursorOutline = document.querySelector('[data-cursor-outline]');
+
+        window.addEventListener("mousemove", function(e) {
+            const posX = e.clientX;
+            const posY = e.clientY;
+
+            // Крапка рухається миттєво
+            cursorDot.style.left = `${posX}px`;
+            cursorDot.style.top = `${posY}px`;
+
+            // Кільце рухається плавно (animate)
+            cursorOutline.animate({
+                left: `${posX}px`,
+                top: `${posY}px`
+            }, { duration: 500, fill: "forwards" });
+        });
+
+        // Ефект збільшення при наведенні
+        const hoverTargets = document.querySelectorAll('a, button, .service-card');
+        
+        hoverTargets.forEach(target => {
+            target.addEventListener('mouseenter', () => {
+                document.body.classList.add('hovering');
+            });
+            target.addEventListener('mouseleave', () => {
+                document.body.classList.remove('hovering');
+            });
+        });
+    </script>
+
+</body>
+</html>

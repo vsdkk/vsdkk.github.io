@@ -6,7 +6,7 @@
     <title>Web3 Portfolio | vsdkk</title>
     <!-- Шрифти -->
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
         :root {
@@ -385,6 +385,7 @@
             text-decoration: none;
             font-weight: 500;
             transition: var(--transition);
+            cursor: none; /* Кастомний курсор для кнопок */
         }
 
         .contact-btn:hover {
@@ -443,7 +444,7 @@
             </div>
             <div class="hero-image-wrap">
                 <!-- ОНОВЛЕНО: Тепер шукає файл avatar.png -->
-                <img src="avatar.png" alt="Avatar" class="hero-avatar">
+                <img src="avatar.png" alt="Avatar" class="hero-avatar" onerror="this.src='https://placehold.co/400x400/010103/38bdf8?text=VSDKK'">
             </div>
         </section>
 
@@ -514,16 +515,23 @@
                         Let's Connect
                     </p>
                     <div class="contact-links">
+                        <!-- Телеграм (можна замінити # на ваше посилання, наприклад https://t.me/ваш_нік) -->
                         <a href="#" class="contact-btn">
                             <i class="fa-brands fa-telegram"></i> Telegram
                         </a>
+                        
+                        <!-- Twitter/X -->
                         <a href="https://x.com/vsdkk" target="_blank" class="contact-btn">
-                            <i class="fa-brands fa-twitter"></i> Twitter / X
+                            <i class="fa-brands fa-x-twitter"></i> @vsdkk
                         </a>
-                        <a href="#" class="contact-btn">
+                        
+                        <!-- ОНОВЛЕНИЙ DISCORD: Клік викликає JS-функцію копіювання -->
+                        <a href="#" onclick="copyDiscord(event)" class="contact-btn discord-btn">
                             <i class="fa-brands fa-discord"></i> vsdkk.eth
                         </a>
-                        <a href="#" class="contact-btn">
+                        
+                        <!-- ОНОВЛЕНИЙ EMAIL: Використовує mailto: -->
+                        <a href="mailto:vsdkk.eth@gmail.com" class="contact-btn">
                             <i class="fa-solid fa-envelope"></i> Email Me
                         </a>
                     </div>
@@ -533,8 +541,9 @@
         </div>
     </div>
 
-    <!-- SCRIPT FOR CURSOR -->
+    <!-- SCRIPT FOR CURSOR & COPY TO CLIPBOARD -->
     <script>
+        // 1. Курсор
         const cursorDot = document.querySelector('[data-cursor-dot]');
         const cursorOutline = document.querySelector('[data-cursor-outline]');
 
@@ -564,6 +573,43 @@
                 document.body.classList.remove('hovering');
             });
         });
+
+        // 2. Функція копіювання Discord
+        function copyDiscord(event) {
+            event.preventDefault(); // Запобігаємо переходу по посиланню
+            const textToCopy = "vsdkk.eth";
+            
+            // Створюємо тимчасовий елемент для копіювання
+            const tempInput = document.createElement("input");
+            tempInput.value = textToCopy;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            
+            try {
+                document.execCommand("copy"); // Копіюємо текст
+                
+                // Візуальний фідбек користувачу
+                const btn = event.currentTarget;
+                const originalHtml = btn.innerHTML; // Зберігаємо старий текст
+                
+                // Міняємо стиль та текст кнопки
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+                btn.style.background = 'linear-gradient(90deg, #10b981, #059669)'; // Зелений колір
+                btn.style.borderColor = 'transparent';
+                
+                // Повертаємо назад через 2 секунди
+                setTimeout(() => {
+                    btn.innerHTML = originalHtml;
+                    btn.style.background = '';
+                    btn.style.borderColor = '';
+                }, 2000);
+                
+            } catch (err) {
+                console.error("Помилка копіювання", err);
+            }
+            
+            document.body.removeChild(tempInput); // Видаляємо тимчасовий елемент
+        }
     </script>
 
 </body>
